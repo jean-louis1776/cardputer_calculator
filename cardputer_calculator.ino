@@ -27,16 +27,32 @@ const int buttonCount = sizeof(buttons) / sizeof(buttons[0]);
 
 void drawUI() {
   auto& display = M5Cardputer.Display;
-  display.clear();
+  // Затереть область ввода (примерно)
+  display.fillRect(0, 0, display.width(), 85, 0xC5F5);
 
-  // Поле ввода
+  // Нарисовать ввод
   display.setCursor(10, 10);
   display.setTextSize(2);
-  display.setTextColor(WHITE);
+  display.setTextColor(BLACK);
   display.print(inputText);
 
-  // Кнопки
+  // Затереть область результата (примерно)
+  display.fillRect(0, 40, display.width(), 20, 0xC5F5);
+
+  if (resultText.length() > 0) {
+    display.setCursor(10, 40);
+    display.setTextSize(2);
+    display.setTextColor(0x1405);
+    display.print("= ");
+    display.print(resultText);
+  }
+
+  // Затереть область кнопок
   int btnY = 85;
+  int btnHeight = 2 * 16 + 10;  // радиус*2 + запас
+  display.fillRect(0, btnY, display.width(), btnHeight, 0xC5F5);
+
+  // Рисуем кнопки
   int btnRadius = 16;
   int spacing = 15;
   int totalWidth = buttonCount * btnRadius * 2 + (buttonCount - 1) * spacing;
@@ -46,23 +62,14 @@ void drawUI() {
     int centerX = startX + i * (btnRadius * 2 + spacing) + btnRadius;
     int centerY = btnY + btnRadius;
 
-    display.fillCircle(centerX, centerY, btnRadius, i == selectedButton ? YELLOW : DARKGREY);
+    display.fillCircle(centerX, centerY, btnRadius, i == selectedButton ? 0xFDA4 : 0x6224);
 
-    display.setTextColor(BLACK);
+    display.setTextColor(i == selectedButton ? BLACK : WHITE);
     display.setTextSize(2);
     int textWidth = 12;
     int textHeight = 16;
     display.setCursor(centerX - textWidth / 2, centerY - textHeight / 2);
     display.print(buttons[i]);
-  }
-
-  // Результат
-  if (resultText.length() > 0) {
-    display.setCursor(10, 40);
-    display.setTextSize(2);
-    display.setTextColor(GREEN);
-    display.print("= ");
-    display.print(resultText);
   }
 }
 
@@ -71,6 +78,10 @@ void drawIconScaled2x(int x, int y, const uint16_t* iconData, int width, int hei
   for (int j = 0; j < height; j++) {
     for (int i = 0; i < width; i++) {
       uint16_t color = iconData[j * width + i];
+      
+      // ⛔ Пропускаем чёрный фон
+      if (color == 0x0000) continue;
+
       int drawX = x + i * 2;
       int drawY = y + j * 2;
       display.fillRect(drawX, drawY, 2, 2, color);
@@ -148,7 +159,7 @@ void setup() {
 
   // Сплэш-экран
   auto& display = M5Cardputer.Display;
-  display.fillScreen(BLACK);
+  display.fillScreen(0xC5F5);
 
   int iconWidth = 32;
   int iconHeight = 32;
@@ -174,6 +185,8 @@ void setup() {
   display.print(subtitle);
 
   delay(1500);
+
+  // display.clear();
 
   drawUI();
 }

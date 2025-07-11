@@ -19,7 +19,7 @@ This project turns your **M5Cardputer** into a stylish **on-device calculator** 
 
 ## 🧰 Hardware Requirements
 
-- M5Stack Cardputer [Buy](https://shop.m5stack.com/products/m5cardputer)
+- M5Stack Cardputer ([Buy](https://shop.m5stack.com/products/m5stack-cardputer-with-m5stamps3-v1-1))
 
 ---
 
